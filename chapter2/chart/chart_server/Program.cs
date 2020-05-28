@@ -67,10 +67,10 @@ namespace chart_server
 
         static void ReceiveCB(IAsyncResult ar)
         {
+            var state = ar.AsyncState as ClientState;
+            var clientSock = state.socket;
             try
             {
-                var state = ar.AsyncState as ClientState;
-                var clientSock = state.socket;
                 int cnt = clientSock.EndReceive(ar);
                 if(cnt == 0){
                     clientSock.Close();
@@ -95,7 +95,11 @@ namespace chart_server
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.ToString());
+                clientSock.Close();
+                _clients.Remove(clientSock);
+                Console.WriteLine($"断开连接：{state.remote}");
+                return;
             }
         }
     }
