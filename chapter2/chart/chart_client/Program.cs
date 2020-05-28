@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace async_echo_client
+namespace chart_client
 {
     class Program
     {
@@ -63,21 +63,35 @@ namespace async_echo_client
         static byte[] sendBuffer = new byte[1024];
         static void SendCB(IAsyncResult ar)
         {
-            var sock = ar.AsyncState as Socket;
-            var cnt = sock.EndSend(ar);
-            var str = Encoding.UTF8.GetString(sendBuffer,0,cnt);
-            Console.WriteLine($"发送:{str}");
+            try
+            {
+                var sock = ar.AsyncState as Socket;
+                var cnt = sock.EndSend(ar);
+                var str = Encoding.UTF8.GetString(sendBuffer,0,cnt);
+                Console.WriteLine($"发送:{str}");
+            }
+            catch(System.Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         static byte[] recBuffer = new byte[1024];
         static void ReceiveCB(IAsyncResult ar)
         {
-            var sock = ar.AsyncState as Socket;
+            try
+            {
+                var sock = ar.AsyncState as Socket;
             
-            var cnt = sock.EndReceive(ar);
-            var recStr = Encoding.UTF8.GetString(recBuffer,0,cnt);
-            Console.WriteLine($"收到:{recStr}");
-            sock.BeginReceive(recBuffer,0,recBuffer.Length,0,ReceiveCB,sock);
+                var cnt = sock.EndReceive(ar);
+                var recStr = Encoding.UTF8.GetString(recBuffer,0,cnt);
+                Console.WriteLine($"收到:{recStr}");
+                sock.BeginReceive(recBuffer,0,recBuffer.Length,0,ReceiveCB,sock);
+            }
+            catch(System.Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

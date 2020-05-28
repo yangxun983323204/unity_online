@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Collections.Generic;
 
-namespace async_echo_server
+namespace chart_server
 {
     class ClientState
     {
@@ -58,8 +58,6 @@ namespace async_echo_server
                 int cnt = clientSock.EndSend(ar);
                 var str = Encoding.UTF8.GetString(state.sendBuffer,0,cnt);
                 Console.WriteLine($"发送：{str}");
-
-                clientSock.BeginReceive(state.recBuffer,0,1024,0,ReceiveCB,state);
             }
             catch(Exception e)
             {
@@ -82,10 +80,18 @@ namespace async_echo_server
                 }
 
                 var recStr = Encoding.UTF8.GetString(state.recBuffer,0,cnt);
-                var sendBytes = Encoding.UTF8.GetBytes("echo_" + recStr);
-                Array.Copy(sendBytes,state.sendBuffer,sendBytes.Length);
+                var sendBytes = Encoding.UTF8.GetBytes($"[from:]{state.remote}] msg:{recStr}");
+                
+                foreach(var s in _clients.Values)
+                {
+                    if(s!=state)
+                    {
+                        Array.Copy(sendBytes,s.sendBuffer,sendBytes.Length);
+                        s.socket.BeginSend(s.sendBuffer,0,sendBytes.Length,0,SendCB,s);
+                    }
+                }
 
-                clientSock.BeginSend(state.sendBuffer,0,sendBytes.Length,0,SendCB,state);
+                clientSock.BeginReceive(state.recBuffer,0,1024,0,ReceiveCB,state);   
             }
             catch(Exception e)
             {
