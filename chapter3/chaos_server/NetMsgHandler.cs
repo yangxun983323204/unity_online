@@ -42,7 +42,7 @@ namespace chaos_server
         {
             foreach(var s in Program._clients.Values)
             {
-                Program.Send(state,msg);
+                Program.Send(s,msg);
             }
         }
 
@@ -52,7 +52,7 @@ namespace chaos_server
             {
                 if(s!=state)
                 {
-                    Program.Send(state,msg);
+                    Program.Send(s,msg);
                 }
             }
         }

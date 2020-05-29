@@ -12,19 +12,19 @@ public class Move : MonoBehaviour
     private void OnEnable()
     {
         _anim = gameObject.GetComponent<Animation>();
-        _anim.Play("Idle");
+        PlayAnim("Idle");
     }
 
     private void nDisable()
     {
-        _anim.Play("Idle");
+        PlayAnim("Idle");
     }
 
     public void MoveTo(Vector3 pos)
     {
         _targetPos = pos;
         _moveing = true;
-        _anim.Play("Run");
+        PlayAnim("Run");
     }
 
     private void Update()
@@ -37,7 +37,15 @@ public class Move : MonoBehaviour
         if (Vector3.Distance(transform.position,_targetPos)<0.05f)
         {
             _moveing = false;
-            _anim.Play("Idle");
+            PlayAnim("Idle");
+        }
+    }
+
+    private void PlayAnim(string name)
+    {
+        if (!_anim.IsPlaying(name))
+        {
+            _anim.Play(name);
         }
     }
 }

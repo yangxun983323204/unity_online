@@ -71,7 +71,7 @@ public class NetMsgHandler : MonoBehaviour
         var splits = obj.Split('&');
         foreach (var msg in splits)
         {
-            var splits2 = obj.Split(',');
+            var splits2 = msg.Split(',');
             var id = splits2[0];
             Debug.Log($"{id},{Main.Net.GetID()}");
             if (id == Main.Net.GetID())
