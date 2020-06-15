@@ -23,8 +23,7 @@ namespace echo_server
                 var cnt = socket.Receive(buffer);
                 var str = Encoding.UTF8.GetString(buffer,0,cnt);
                 Console.WriteLine($"收到：{str}");
-                var echoStr = $"我已收到你发的{str}";
-                socket.Send(Encoding.UTF8.GetBytes(echoStr));
+                socket.Send(Encoding.UTF8.GetBytes(str));
             }
         }
     }
