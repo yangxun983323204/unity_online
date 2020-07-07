@@ -19,9 +19,30 @@ public class ByteArray{
 
 public class WriteQueue:Queue<ByteArray>{
 
+    object _lock = new object();
     public ByteArray EnqueueFrom(byte[] data){
-        var ba = new ByteArray(data);
-        Enqueue(ba);
-        return ba;
+        lock(_lock){
+            var ba = new ByteArray(data);
+            Enqueue(ba);
+            return ba;
+        }
+    }
+
+    public new void Enqueue(ByteArray data){
+        lock(_lock){
+            base.Enqueue(data);
+        }
+    }
+
+    public new ByteArray Peek(){
+        lock(_lock){
+            return base.Peek();
+        }
+    }
+
+    public new ByteArray Dequeue(){
+        lock(_lock){
+            return base.Dequeue();
+        }
     }
 }
