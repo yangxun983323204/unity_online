@@ -19,8 +19,9 @@ public class ByteArray{
 
 public class WriteQueue:Queue<ByteArray>{
 
-    public void EnqueueFrom(byte[] data){
+    public ByteArray EnqueueFrom(byte[] data){
         var ba = new ByteArray(data);
         Enqueue(ba);
+        return ba;
     }
 }
