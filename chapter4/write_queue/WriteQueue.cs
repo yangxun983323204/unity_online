@@ -36,7 +36,10 @@ public class WriteQueue:Queue<ByteArray>{
 
     public new ByteArray Peek(){
         lock(_lock){
-            return base.Peek();
+            if(Count>0)
+                return base.Peek();
+            else
+                return null;
         }
     }
 
