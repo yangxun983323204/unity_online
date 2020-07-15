@@ -82,7 +82,7 @@ namespace async_echo_server
                 }
 
                 var recStr = Encoding.UTF8.GetString(state.recBuffer,0,cnt);
-                var sendBytes = Encoding.UTF8.GetBytes("echo_" + recStr);
+                var sendBytes = Encoding.UTF8.GetBytes(recStr);
                 Array.Copy(sendBytes,state.sendBuffer,sendBytes.Length);
 
                 clientSock.BeginSend(state.sendBuffer,0,sendBytes.Length,0,SendCB,state);

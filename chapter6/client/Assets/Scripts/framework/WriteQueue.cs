@@ -4,12 +4,24 @@ using System.Collections.Generic;
 public class WriteQueue:Queue<ByteArray>{
 
     object _lock = new object();
-    public ByteArray EnqueueFrom(byte[] data){
-        lock(_lock){
-            var ba = new ByteArray(data);
-            Enqueue(ba);
-            return ba;
+
+    public new int Count {
+        get {
+            int v;
+            lock (_lock)
+            {
+                v = base.Count;
+            }
+            return v;
         }
+    }
+
+    public ByteArray EnqueueFrom(byte[] data){
+        var ba = new ByteArray(data);
+        lock (_lock){
+            Enqueue(ba);
+        }
+        return ba;
     }
 
     public new void Enqueue(ByteArray data){
@@ -19,17 +31,21 @@ public class WriteQueue:Queue<ByteArray>{
     }
 
     public new ByteArray Peek(){
-        lock(_lock){
+        ByteArray v = null;
+        lock (_lock){
             if(Count>0)
-                return base.Peek();
+                v = base.Peek();
             else
-                return null;
+                v = null;
         }
+        return v;
     }
 
     public new ByteArray Dequeue(){
+        ByteArray v;
         lock(_lock){
-            return base.Dequeue();
+            v = base.Dequeue();
         }
+        return v;
     }
 }
