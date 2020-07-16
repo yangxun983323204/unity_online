@@ -75,25 +75,28 @@ public class NetManager
     }
 
     bool _isCloseing = false;
-    public void Close()
+    public void Close(string msg = null)
     {
         if (_isCloseing || _socket == null)
             return;
 
-        if (!_socket.Connected)
+        lock (_socket)
         {
-            _socket = null;
-            NetEventDispatcher.Trigger(NetEvent.Close, null);
-            return;
-        }
+            if (!_socket.Connected)
+            {
+                _socket = null;
+                NetEventDispatcher.Trigger(NetEvent.Close, msg);
+                return;
+            }
 
-        if (_sendQueue.Count > 0)
-            _isCloseing = true;
-        else
-        {
-            _socket.Close();
-            _socket = null;
-            NetEventDispatcher.Trigger(NetEvent.Close, null);
+            if (_sendQueue.Count > 0)
+                _isCloseing = true;
+            else
+            {
+                _socket.Close();
+                _socket = null;
+                NetEventDispatcher.Trigger(NetEvent.Close, msg);
+            }
         }
     }
 
@@ -197,7 +200,7 @@ public class NetManager
         }
         catch (Exception e)
         {
-            Close();
+            Close(e.ToString());
         }
     }
 
@@ -205,7 +208,7 @@ public class NetManager
     {
         int count = 0;
         object msg = null;
-        if (Packer.Decode(_recBuffer.Bytes,_recBuffer.ReadIdx,_recBuffer.Remain,out msg,out count))
+        if (Packer.Decode(_recBuffer.Bytes,_recBuffer.ReadIdx,_recBuffer.Length,out msg,out count))
         {
             _recBuffer.MoveReadIdx(count);
             _recBuffer.CheckAndMoveBytes();

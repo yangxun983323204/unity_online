@@ -4,7 +4,11 @@ using System.Collections.Generic;
 
 public class HeartbeatMgr
 {
-    public bool Enable { get; set; } = false;
+    private bool _enable = false;
+    public bool Enable {
+        get { return _enable; }
+        set { _enable = value;Reset(null); }
+    }
     public int PingInterval { get; set; } = 30;
     public Func<object> MakePingMsg { get; set; }
 
@@ -16,10 +20,10 @@ public class HeartbeatMgr
     {
         _netMgr = netMgr;
         _netMgr.NetMsgDispatcher.AddListener(NetManager.__INTERNAL_ANY_MSG, OnMsgRec);
-        _netMgr.NetEventDispatcher.AddListener(NetManager.NetEvent.ConnectSuccess, OnConnect);
+        _netMgr.NetEventDispatcher.AddListener(NetManager.NetEvent.ConnectSuccess, Reset);
     }
 
-    private void OnConnect(string msg)
+    private void Reset(string msg)
     {
         _lastPingTime = DateTime.Now.Ticks;
         _lastPongTime = DateTime.Now.Ticks;

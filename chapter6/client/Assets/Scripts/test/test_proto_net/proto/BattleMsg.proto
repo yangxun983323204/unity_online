@@ -1,0 +1,7 @@
+package ProtoNetMsg;
+
+message MsgMove{
+    optional int32 X = 1;
+    optional int32 Y = 2;
+    optional int32 Z = 3;
+}
