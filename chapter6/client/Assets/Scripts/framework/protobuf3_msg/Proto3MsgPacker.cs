@@ -6,7 +6,7 @@ using Google.Protobuf;
 
 namespace Proto3Msg
 {
-    public class Proto3MsgPacker : MsgPacker
+    public class Proto3MsgPacker : AdvanceMsgPacker
     {
         public override string GetMsgName(Type type)
         {

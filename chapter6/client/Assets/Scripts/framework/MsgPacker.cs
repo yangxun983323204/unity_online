@@ -36,7 +36,7 @@ public abstract class MsgPacker
         offset += 2;len -= 2;
         int msgNameLen = 0;
         string name;
-        if (!DecodeName(bytes, offset, out name, out msgNameLen)) return false;
+        if (!DecodeName(bytes, offset,len, out name, out msgNameLen)) return false;
 
         offset += msgNameLen;len -= msgNameLen;
         int msgBodyLen = packBodyLen - msgNameLen;
@@ -64,11 +64,11 @@ public abstract class MsgPacker
         return bytes;
     }
 
-    protected virtual bool DecodeName(byte[] bytes,int offset,out string name,out int count)
+    protected virtual bool DecodeName(byte[] bytes,int offset,int size,out string name,out int count)
     {
         name = null;
         count = 0;
-        if (offset + 2 > bytes.Length)
+        if (offset + 2 > size)
             return false;
 
         short len = (short)((bytes[offset+1]<<8)|bytes[offset]);

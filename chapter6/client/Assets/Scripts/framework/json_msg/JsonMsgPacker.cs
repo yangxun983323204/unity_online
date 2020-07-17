@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace JsonMsg
 {
-    public class JsonMsgPacker : MsgPacker
+    public class JsonMsgPacker : AdvanceMsgPacker
     {
         public override string GetMsgName(Type type)
         {

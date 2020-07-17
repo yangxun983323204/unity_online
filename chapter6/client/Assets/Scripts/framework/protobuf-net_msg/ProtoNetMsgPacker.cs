@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ProtoNetMsg
 {
-    public class ProtoNetMsgPacker : MsgPacker
+    public class ProtoNetMsgPacker : AdvanceMsgPacker
     {
         public override string GetMsgName(Type type)
         {
