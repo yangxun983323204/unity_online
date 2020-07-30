@@ -43,6 +43,7 @@ namespace JsonMsg
                 msg.X = Random.Range(-10, 10);
                 msg.Y = Random.Range(-10, 10);
                 msg.Z = Random.Range(-10, 10);
+                Debug.LogFormat("Send:{0},{1},{2}", msg.X, msg.Y, msg.Z);
                 _netMgr.Send(msg);
             }
         }

@@ -41,6 +41,7 @@ public class HeartbeatMgr
     {
         if(!Enable)return;
 
+        client.LastMsgTime = DateTime.Now.Ticks;
         if(IsPing!=null && MakePongMsg!=null){
             if(IsPing(msg)){
                 var pong = MakePongMsg();

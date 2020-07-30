@@ -6,7 +6,8 @@ namespace svr_framework
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("开始测试!");
+            var testMove = new MoveServer();
         }
     }
 }

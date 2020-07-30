@@ -14,6 +14,8 @@ public class NetManager
     private List<Socket> _checkRead;
     private HeartbeatMgr _heartbeat;
 
+    private MsgHandlerMgr _handlerMgr = new MsgHandlerMgr();
+
     public NetManager(int initCapacity = 100)
     {
         _clients = new Dictionary<Socket, ClientState>(initCapacity);
@@ -39,9 +41,9 @@ public class NetManager
                 else
                     ReadClient(s);
             }
-        }
 
-        Timer();
+            Timer();
+        }
     }
     private void ResetCheckRead()
     {
@@ -58,6 +60,7 @@ public class NetManager
             var client = new ClientState();
             client.Sock = clientfd;
             _clients.Add(clientfd,client);
+            CallMsgHandler("OnConnect",null,client);
         }catch(SocketException e){
             // todo
         }
@@ -169,9 +172,10 @@ public class NetManager
     }
     private void CallMsgHandler(string name,object msg,ClientState client)
     {
-        // todo call
         // 心跳回应
         _heartbeat.OnMsgRec(client,msg);
+        //
+        _handlerMgr.HandleMsg(name,msg,client);
     }
     public void EnableHeartbeat(Func<object,bool> isPing,Func<object> makePongMsg)
     {
@@ -180,4 +184,25 @@ public class NetManager
         _heartbeat.MakePongMsg = makePongMsg;
     }
     public void DisableHeartbeat() { _heartbeat.Enable = false; }
+    /// <summary>
+    /// 通过消息名查找回调方法时，会去除消息的命名空间和父类名
+    /// </summary>
+    public void AddMsgHandler(object inst)
+    {
+        _handlerMgr.AddHandler(inst);
+    }
+    public void RemoveMsgHandler(object inst)
+    {
+        _handlerMgr.RemoveHandler(inst);
+    }
+
+    ~NetManager()
+    {
+        try{
+            _listenfd.Close();
+        }catch(Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+    }
 }
