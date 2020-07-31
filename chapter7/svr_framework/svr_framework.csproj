@@ -5,6 +5,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include=".\framework\3rd\Newtonsoft.Json.dll"/>
+    <Reference Include=".\framework\json_msg\Newtonsoft.Json.dll"/>
   </ItemGroup>
 </Project>

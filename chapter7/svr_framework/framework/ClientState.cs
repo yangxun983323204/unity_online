@@ -10,4 +10,6 @@ public class ClientState{
     public WriteQueue SendQueue = new WriteQueue();
 
     public long LastMsgTime = 0;
+
+    public object UserObject = null;
 }
