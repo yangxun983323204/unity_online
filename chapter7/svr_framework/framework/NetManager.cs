@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -132,8 +133,9 @@ public class NetManager
     }
     private void Timer()
     {
-        foreach(var client in _clients.Values)
-            _heartbeat.Process(client);
+        var clients = _clients.Values.ToList();
+        for(int i = clients.Count - 1;i>=0;i--)
+            _heartbeat.Process(clients[i]);
 
         CallMsgHandler(MSG_TIMER,null,null);
     }
