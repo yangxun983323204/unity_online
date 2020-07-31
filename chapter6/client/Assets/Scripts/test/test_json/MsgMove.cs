@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JsonMsg
 {
-    public class MsgMove : JsonMsgBase
+    public class MsgMove
     {
         public float X = 0;
         public float Y = 0;

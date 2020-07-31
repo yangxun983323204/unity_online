@@ -16,6 +16,12 @@ public class NetManager
 
     private MsgHandlerMgr _handlerMgr = new MsgHandlerMgr();
 
+    private const string MSG_CONNECT = "OnConnect";
+    private const string MSG_DISCONNECT = "OnDisconnect";
+    private const string MSG_TIMER = "OnTimer";
+
+    private const string MSG_ERROR = "OnError";
+
     public NetManager(int initCapacity = 100)
     {
         _clients = new Dictionary<Socket, ClientState>(initCapacity);
@@ -60,7 +66,7 @@ public class NetManager
             var client = new ClientState();
             client.Sock = clientfd;
             _clients.Add(clientfd,client);
-            CallMsgHandler("OnConnect",null,client);
+            CallMsgHandler(MSG_CONNECT,null,client);
         }catch(SocketException e){
             // todo
         }
@@ -98,7 +104,7 @@ public class NetManager
     }
     public void Close(ClientState client)
     {
-        CallMsgHandler("OnDisconnect",null,client);
+        CallMsgHandler(MSG_DISCONNECT,null,client);
         client.Sock.Close();
         _clients.Remove(client.Sock);
     }
@@ -107,23 +113,29 @@ public class NetManager
         int count = 0;
         object msg = null;
         var recBuffer = client.RecBuffer;
-        if(Packer.Decode(recBuffer.Bytes,recBuffer.ReadIdx,recBuffer.Length,out msg,out count))
-        {
-            recBuffer.MoveReadIdx(count);
-            recBuffer.CheckAndMoveBytes();
-            CallMsgHandler(Packer.GetMsgName(msg),msg,client);
-            if(recBuffer.Length > 2)
+        try{
+            if(Packer.Decode(recBuffer.Bytes,recBuffer.ReadIdx,recBuffer.Length,out msg,out count))
             {
-                OnReceiveData(client);
+                recBuffer.MoveReadIdx(count);
+                recBuffer.CheckAndMoveBytes();
+                CallMsgHandler(Packer.GetMsgName(msg),msg,client);
+                if(recBuffer.Length > 2)
+                {
+                    OnReceiveData(client);
+                }
             }
+        }catch(Exception e){
+            CallMsgHandler(MSG_ERROR,e,client);
+            Close(client);
         }
+        
     }
     private void Timer()
     {
         foreach(var client in _clients.Values)
             _heartbeat.Process(client);
 
-        CallMsgHandler("OnTimer",null,null);
+        CallMsgHandler(MSG_TIMER,null,null);
     }
     public void Send(ClientState client,object msg)
     {

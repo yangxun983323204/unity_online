@@ -15,12 +15,11 @@ namespace JsonMsg
 
         public override string GetMsgName(object msg)
         {
-            return (msg as JsonMsgBase).ProtoName;
+            return msg.GetType().ToString();
         }
 
         protected override byte[] EncodeMsg(object msg)
         {
-            var jsonMsg = msg as JsonMsgBase;
             string s = JsonUtility.ToJson(msg);
             var bodyBytes = Encoding.UTF8.GetBytes(s);
             return bodyBytes;
@@ -29,7 +28,7 @@ namespace JsonMsg
         protected override object DecodeMsg(string protoName, byte[] bytes, int offset, int count)
         {
             string s = Encoding.UTF8.GetString(bytes, offset, count);
-            JsonMsgBase msg = (JsonMsgBase)JsonUtility.FromJson(s, Type.GetType(protoName));
+            var msg = JsonUtility.FromJson(s, Type.GetType(protoName));
             return msg;
         }
     }

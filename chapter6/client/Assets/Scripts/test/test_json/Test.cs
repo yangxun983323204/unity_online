@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JsonMsg
 {
-    public class MsgPing : JsonMsgBase
+    public class MsgPing
     {
     }
 

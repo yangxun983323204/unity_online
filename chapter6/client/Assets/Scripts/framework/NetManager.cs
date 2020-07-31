@@ -208,21 +208,31 @@ public class NetManager
     {
         int count = 0;
         object msg = null;
-        if (Packer.Decode(_recBuffer.Bytes,_recBuffer.ReadIdx,_recBuffer.Length,out msg,out count))
+        try
         {
-            _recBuffer.MoveReadIdx(count);
-            _recBuffer.CheckAndMoveBytes();
-            lock (_msgList)
+            if (Packer.Decode(_recBuffer.Bytes, _recBuffer.ReadIdx, _recBuffer.Length, out msg, out count))
             {
-                _msgList.Add(msg);
-            }
+                _recBuffer.MoveReadIdx(count);
+                _recBuffer.CheckAndMoveBytes();
+                lock (_msgList)
+                {
+                    _msgList.Add(msg);
+                }
 
-            if (_recBuffer.Length > 2)// 解下一个包
-            {
-                OnReceiveData();
+                if (_recBuffer.Length > 2)// 解下一个包
+                {
+                    OnReceiveData();
+                }
             }
         }
+        catch (Exception e)
+        {
+            NetMsgDispatcher.Trigger(MSG_ERROR, e);
+            Close(e.ToString());
+        }
+        
     }
 
+    public const string MSG_ERROR = "OnError";
     public const string __INTERNAL_ANY_MSG = "__internal_any_msg";
 }

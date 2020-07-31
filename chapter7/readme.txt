@@ -1,0 +1,1 @@
+svr_framework/test/MoveServer使用改进型json编解码消息，可以使用第6章的test_json_adv场景连接测试

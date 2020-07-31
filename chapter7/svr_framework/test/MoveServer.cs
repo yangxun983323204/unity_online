@@ -35,6 +35,11 @@ public class MoveServer
 
     }
 
+    public void MSG_OnError(object e,ClientState client)
+    {
+        Console.WriteLine(e.ToString());
+    }
+
     public void MSG_MsgMove(object msg,ClientState client)
     {
         var move = msg as MsgMove;
@@ -52,11 +57,11 @@ public class MoveServer
 
 namespace JsonMsg
 {
-    public class MsgPing : JsonMsgBase
+    public class MsgPing
     {
     }
 
-    public class MsgMove : JsonMsgBase
+    public class MsgMove
     {
         public float X = 0;
         public float Y = 0;
