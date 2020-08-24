@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 public class Account
 {
-    public string Id;
-    public string Pw;
+    public string Id{get;set;}
+    public string Pw{get;set;}
 }
 
 public class AccountContext:DbContext
@@ -24,6 +24,12 @@ public class AccountContext:DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options.UseSqlite($"Data Source={_dbPath}");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Account>()
+            .HasKey(a => a.Id);
     }
 
     public void Register(Account account)
@@ -52,6 +58,18 @@ public class AccountContext:DbContext
             return true;
         }
 
+        return false;
+    }
+
+    public bool Remove(Account account)
+    {
+        var c = Accounts.Find(account.Id);
+        if(c!=null && c.Pw == account.Pw)
+        {
+            Accounts.Remove(c);
+            this.SaveChanges();
+            return true;
+        }
         return false;
     }
 }
